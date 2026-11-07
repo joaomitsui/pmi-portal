@@ -447,6 +447,7 @@ export default function App() {
 
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
           {[
+            { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado' },
             { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
             { id: 'TAB-GANTT', label: 'Cronograma Gantt' },
             { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
