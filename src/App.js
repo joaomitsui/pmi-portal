@@ -33,6 +33,7 @@ import {
   Calendar,
   Briefcase
 } from 'lucide-react';
+import ScheduleTab from './ScheduleTab';
 
 const initialProjectsData = [
   {
