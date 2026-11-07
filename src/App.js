@@ -452,7 +452,7 @@ export default function App() {
             { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
             { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
             { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
-            { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' }
+            { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -476,6 +476,7 @@ export default function App() {
       </header>
 
       <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+{activeTabId === 'TAB-SCHEDULE' && <ScheduleTab />}
         {activeTabId === 'TAB-FUNDRAISING' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={styles.cardDark}>
