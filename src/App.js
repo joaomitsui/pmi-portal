@@ -169,9 +169,7 @@ export default function App() {
   const [inputPassword, setInputPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
-  const [authError, setAuthError] = useState('');
-
-  // 📥 ESTADO GLOBAL UNIFICADO (Input, HBU, Garantias, Solar e Prazos)
+    // 📥 ESTADO GLOBAL UNIFICADO (Input, HBU, Garantias, Solar e Prazos)
   const [globalData, setGlobalData] = useState({
     config: {
       startDate: '2026-11-01',
@@ -501,7 +499,12 @@ export default function App() {
       </header>
 
       <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-{activeTabId === 'TAB-SCHEDULE' && <ScheduleTab />}
+{activeTabId === 'TAB-INPUT' && (
+          <InputTab globalData={globalData} setGlobalData={setGlobalData} />
+        )}
+{activeTabId === 'TAB-SCHEDULE' && (
+        <ScheduleTab globalData={globalData} setGlobalData={setGlobalData} />
+      )}
         {activeTabId === 'TAB-FUNDRAISING' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={styles.cardDark}>
