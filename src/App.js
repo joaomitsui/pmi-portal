@@ -463,39 +463,44 @@ export default function App() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
-<div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
-        {[
-          { id: 'TAB-INPUT', label: '📥 Input & Premissas Globais' },
-          { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado' },
-          { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
-          { id: 'TAB-GANTT', label: 'Cronograma Gantt' },
-          { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
-          { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
-          { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
-          { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' }
-        ].map(tab => (          
-            <button
-              key={tab.id}
-              onClick={() => setActiveTabId(tab.id)}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                borderRadius: '0.5rem 0.5rem 0 0',
-                border: '1px solid #1e293b',
-                backgroundColor: activeTabId === tab.id ? '#090d16' : '#0f172a',
-                color: activeTabId === tab.id ? '#34d399' : '#94a3b8',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </header>
+       <header style={{ backgroundColor: '#090d16', borderBottom: '1px solid #1e293b', padding: '1rem' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+    <div>
+      <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>PMI Executive Portal</h1>
+      <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.25rem 0 0 0' }}>Ecossistema Integrado de Gestão e Premissas</p>
+    </div>
+  </div>
+  <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
+    {[
+      { id: 'TAB-INPUT', label: '📥 Input & Premissas Globais' },
+      { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado' },
+      { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
+      { id: 'TAB-GANTT', label: 'Cronograma Gantt' },
+      { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
+      { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
+      { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
+      { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' }
+    ].map(tab => (
+      <button
+        key={tab.id}
+        onClick={() => setActiveTabId(tab.id)}
+        style={{
+          padding: '0.5rem 1rem',
+          fontSize: '0.75rem',
+          fontWeight: 'bold',
+          borderRadius: '0.5rem 0.5rem 0 0',
+          border: '1px solid #1e293b',
+          backgroundColor: activeTabId === tab.id ? '#090d16' : '#0f172a',
+          color: activeTabId === tab.id ? '#34d399' : '#94a3b8',
+          cursor: 'pointer',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+</header>
        
 
       <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
