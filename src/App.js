@@ -494,7 +494,9 @@ export default function App() {
             </button>
           ))}
         </div>
-      </header>
+      </div>
+    </header>
+       
 
       <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
 {activeTabId === 'TAB-INPUT' && (
