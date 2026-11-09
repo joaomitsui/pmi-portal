@@ -474,9 +474,7 @@ export default function App() {
           { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
           { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
           { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' }
-        ].map(tab => (
-          <button
-                
+        ].map(tab => (          
             <button
               key={tab.id}
               onClick={() => setActiveTabId(tab.id)}
