@@ -1,3 +1,4 @@
+import InputTab from './InputTab';
 import React, { useState, useEffect } from 'react';
 import {
   FolderKanban,
@@ -168,6 +169,25 @@ export default function App() {
   const [inputPassword, setInputPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
+  const [authError, setAuthError] = useState('');
+
+  // 📥 ESTADO GLOBAL UNIFICADO (Input, HBU, Garantias, Solar e Prazos)
+  const [globalData, setGlobalData] = useState({
+    config: {
+      startDate: '2026-11-01',
+      structuringDays: 75,
+      fundraisingDays: 90,
+      useTME: true
+    },
+    assets: [
+      { id: 1, name: 'Terreno Lote 07 (Khuark Construtora)', ha: 128.82, mat: '103.712', loc: 'Porto Velho/RO', ptam: 0, isSolar: false, isCollateral: true },
+      { id: 2, name: 'Sítio Silva (Daniela Silva dos Reis)', ha: 96.92, mat: '10030', loc: 'Porto Velho/RO', ptam: 0, isSolar: false, isCollateral: true },
+      { id: 3, name: 'Fazenda Arizona (Lincoln Duarte)', ha: 412.61, mat: '9230', loc: 'Porto Velho/RO', ptam: 0, isSolar: true, isCollateral: true },
+      { id: 4, name: 'Lote 2683 (North Star Energy)', ha: 3000.00, mat: '2.683', loc: 'Pres. Figueiredo/AM', ptam: 18460000, isSolar: true, isCollateral: true },
+      { id: 5, name: 'Lote 2684 (North Star Energy)', ha: 3000.00, mat: '2.684', loc: 'Pres. Figueiredo/AM', ptam: 18060000, isSolar: true, isCollateral: true }
+    ]
+  });
+  
   const [userCredentials, setUserCredentials] = useState(() => {
     const saved = localStorage.getItem('pmi_user_credentials');
     return saved ? JSON.parse(saved) : {
@@ -446,15 +466,19 @@ export default function App() {
         </div>
 
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
-          {[
-            { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado' },
-            { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
-            { id: 'TAB-GANTT', label: 'Cronograma Gantt' },
-            { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
-            { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
-            { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
-            { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' },
-          ].map(tab => (
+<div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
+        {[
+          { id: 'TAB-INPUT', label: '📥 Input & Premissas Globais' },
+          { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado' },
+          { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
+          { id: 'TAB-GANTT', label: 'Cronograma Gantt' },
+          { id: 'TAB-TME', label: 'Protótipo TME & P&D' },
+          { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
+          { id: 'TAB-ASSETS', label: 'Repositório de Garantias' },
+          { id: 'TAB-DAILY-OPERATIONS', label: 'Operação Diária & Logs' }
+        ].map(tab => (
+          <button
+                
             <button
               key={tab.id}
               onClick={() => setActiveTabId(tab.id)}
