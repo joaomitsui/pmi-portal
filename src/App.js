@@ -63,7 +63,7 @@ const initialProjectsData = [
             endDate: '2027-01-30',
             progress: 60,
             status: 'Em Andamento',
-            history: [{ date: '11/11/2026', note: 'Matrículas de Porto Velho e Pres. Figueiredo reunidas.' }],
+            history: [{ date: '11/11/2026', note: 'Matrículas reunidas.' }],
             files: ['Laudo_ABNT_Consolidado.pdf']
           }
         ]
