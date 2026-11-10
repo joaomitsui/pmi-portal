@@ -871,8 +871,7 @@ export default function App() {
         style={{ ...styles.inputDark, height: '70px', resize: 'vertical' }}
         required
       />
-    </div>
-
+    
     <button type="submit" style={styles.buttonGreen}>
       Salvar Ativo no Dossier
     </button>
