@@ -1,4 +1,5 @@
 import InputTab from './InputTab';
+import ScheduleTab from './ScheduleTab';
 import React, { useState, useEffect } from 'react';
 import {
   FolderKanban,
@@ -34,7 +35,6 @@ import {
   Calendar,
   Briefcase
 } from 'lucide-react';
-import ScheduleTab from './ScheduleTab';
 
 const initialProjectsData = [
   {
@@ -65,6 +65,18 @@ const initialProjectsData = [
             status: 'Em Andamento',
             history: [{ date: '01/11/2026', note: 'Minuta final validada pela diretoria.' }],
             files: ['Teaser_Captacao_R$250M_v2.pdf']
+          },
+          {
+            id: 'SUB-F1.2',
+            code: '1.2',
+            name: 'Construção do Financial Model & DCF (Discounted Cash Flow)',
+            owner: 'Advisory Financeiro / Shoichiro Mitsui',
+            startDate: '2026-11-05',
+            endDate: '2026-12-10',
+            progress: 80,
+            status: 'Em Andamento',
+            history: [{ date: '04/11/2026', note: 'Premissas de alavancagem 70/30 injetadas no modelo.' }],
+            files: ['PMI_Financial_Model_2026.xlsx']
           }
         ]
       }
@@ -87,6 +99,7 @@ export default function App() {
   const [inputPassword, setInputPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
+  // ESTADO GLOBAL UNIFICADO
   const [globalData, setGlobalData] = useState(() => {
     const saved = localStorage.getItem('pmi_global_data_unified');
     return saved ? JSON.parse(saved) : {
@@ -140,25 +153,13 @@ export default function App() {
   const [newFundForm, setNewFundForm] = useState({ name: '', type: 'Private Equity / Infra', status: 'Em Contato', amount: '', owner: 'Luiz Marcelo' });
 
   const [activeTabId, setActiveTabId] = useState(() => {
-    return localStorage.getItem('pmi_active_tab_id') || 'TAB-FUNDRAISING';
+    return localStorage.getItem('pmi_active_tab_id') || 'TAB-INPUT';
   });
 
   const [showAddAssetModal, setShowAddAssetModal] = useState(false);
   const [newAssetForm, setNewAssetForm] = useState({ name: '', type: 'Imóvel Rural (HBU)', valuation: 'R$ 10.000.000', ha: 50, mat: '12345', loc: 'Porto Velho/RO', status: 'Regularizado', ltv: '50%', dossier: '' });
 
   const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
-  const [dailyTodos, setDailyTodos] = useState(() => {
-    const saved = localStorage.getItem('pmi_daily_todos');
-    return saved ? JSON.parse(saved) : [{ id: 'todo-1', task: 'Finalizar Teaser da Rodada de Captação R$ 250M', author: 'Luiz Marcelo (Gestor 1)', priority: 'Alta', done: false, date: '2026-11-06' }];
-  });
-
-  const [dailyLogs, setDailyLogs] = useState(() => {
-    const saved = localStorage.getItem('pmi_daily_logs');
-    return saved ? JSON.parse(saved) : [{ id: 'log-1', date: '06/11/2026 14:15', project: 'Roadshow & Captação', author: 'Shoichiro Mitsui (Gestor 2)', content: 'Alinhamento com investidores internacionais concluído.' }];
-  });
-
-  const [newLogContent, setNewLogContent] = useState('');
-  const [newTodoTask, setNewTodoTask] = useState('');
   const [aiAnalyzingId, setAiAnalyzingId] = useState(null);
 
   useEffect(() => {
@@ -168,6 +169,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('pmi_funds_pipeline', JSON.stringify(fundsPipeline));
   }, [fundsPipeline]);
+
+  useEffect(() => {
+    localStorage.setItem('pmi_dashboard_projects', JSON.stringify(projects));
+  }, [projects]);
 
   useEffect(() => {
     localStorage.setItem('pmi_active_tab_id', activeTabId);
@@ -234,21 +239,22 @@ export default function App() {
     }, 2000);
   };
 
-  const handleAddFundSubmit = (e) => {
-    e.preventDefault();
-    if (!newFundForm.name.trim() || !newFundForm.amount.trim()) return;
-    const newFund = {
-      id: `FND-${Date.now()}`,
-      name: newFundForm.name,
-      type: newFundForm.type,
-      status: newFundForm.status,
-      amount: newFundForm.amount.startsWith('R$') ? newFundForm.amount : `R$ ${newFundForm.amount}`,
-      owner: newFundForm.owner,
-      lastContact: new Date().toISOString().split('T')[0]
-    };
-    setFundsPipeline(prev => [newFund, ...prev]);
-    setShowAddFundModal(false);
-    setNewFundForm({ name: '', type: 'Private Equity / Infra', status: 'Em Contato', amount: '', owner: 'Luiz Marcelo' });
+  const calculateTotalPipeline = () => {
+    let total = 0;
+    fundsPipeline.forEach(f => {
+      const num = parseFloat(f.amount.replace(/[^0-9,-]/g, '').replace(',', '.'));
+      if (!isNaN(num)) total += num;
+    });
+    return total > 0 ? `R$ ${(total).toLocaleString('pt-BR')}` : 'R$ 250.000.000';
+  };
+
+  const calculateTotalValuation = () => {
+    let total = 0;
+    globalData.assets.forEach(a => {
+      const num = parseFloat(a.valuation.replace(/[^0-9,-]/g, '').replace(',', '.'));
+      if (!isNaN(num)) total += num;
+    });
+    return total > 0 ? `R$ ${(total).toLocaleString('pt-BR')}` : 'R$ 63.500.000';
   };
 
   const styles = {
@@ -292,12 +298,16 @@ export default function App() {
     <div style={styles.bgDark}>
       <header style={{ backgroundColor: '#0f172a', borderBottom: '1px solid #1e293b', padding: '1rem 1.5rem', position: 'sticky', top: 0, zIndex: 40 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <h1 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>PMI Fundraising & TME Portal</h1>
+          <div>
+            <h1 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>PMI Fundraising & TME Portal</h1>
+            <p style={{ fontSize: '0.7rem', color: '#94a3b8', margin: 0 }}>Valuation de Garantias: <span style={{ color: '#34d399', fontWeight: 'bold' }}>{calculateTotalValuation()}</span> | Pipeline Captação: <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>{calculateTotalPipeline()}</span></p>
+          </div>
           <button onClick={handleLogout} style={{ backgroundColor: '#1e293b', color: '#cbd5e1', fontSize: '0.75rem', fontWeight: 600, padding: '0.4rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #334155', cursor: 'pointer' }}>Sair</button>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
           {[
             { id: 'TAB-INPUT', label: '📥 Input & Premissas Globais' },
+            { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado (PMI)' },
             { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
             { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
             { id: 'TAB-ASSETS', label: 'Repositório de Garantias' }
@@ -312,16 +322,19 @@ export default function App() {
       <main style={{ padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
         {activeTabId === 'TAB-INPUT' && <InputTab globalData={globalData} setGlobalData={setGlobalData} />}
         
+        {activeTabId === 'TAB-SCHEDULE' && <ScheduleTab globalData={globalData} setGlobalData={setGlobalData} />}
+
         {activeTabId === 'TAB-FUNDRAISING' && (
           <div style={styles.cardDark}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Funil de Captação de Recursos</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Funil de Captação de Recursos (Meta R$ 250M)</h2>
               <button onClick={() => setShowAddFundModal(true)} style={styles.buttonGreen}>Adicionar Fundo</button>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.8rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #1e293b', color: '#94a3b8' }}>
-                  <th style={{ padding: '0.75rem' }}>Fundo</th>
+                  <th style={{ padding: '0.75rem' }}>Fundo / Investidor</th>
+                  <th style={{ padding: '0.75rem' }}>Tipo</th>
                   <th style={{ padding: '0.75rem' }}>Valor Alvo</th>
                   <th style={{ padding: '0.75rem' }}>Status</th>
                 </tr>
@@ -329,8 +342,9 @@ export default function App() {
               <tbody>
                 {fundsPipeline.map(fund => (
                   <tr key={fund.id} style={{ borderBottom: '1px solid #1e293b' }}>
-                    <td style={{ padding: '0.75rem', color: '#ffffff' }}>{fund.name}</td>
-                    <td style={{ padding: '0.75rem', color: '#34d399' }}>{fund.amount}</td>
+                    <td style={{ padding: '0.75rem', color: '#ffffff', fontWeight: 'bold' }}>{fund.name}</td>
+                    <td style={{ padding: '0.75rem', color: '#cbd5e1' }}>{fund.type}</td>
+                    <td style={{ padding: '0.75rem', color: '#34d399', fontWeight: 'bold' }}>{fund.amount}</td>
                     <td style={{ padding: '0.75rem', color: '#60a5fa' }}>{fund.status}</td>
                   </tr>
                 ))}
@@ -339,14 +353,13 @@ export default function App() {
           </div>
         )}
 
-        {/* ABA DE ESTUDOS HBU & BANCABILIDADE COM UPLOAD E AUDITORIA DE IA */}
         {activeTabId === 'TAB-HBU' && (
           <div style={styles.cardDark}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
               <Compass style={{ color: '#38bdf8', width: '28px', height: '28px' }} />
               <div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Estudos HBU (Highest and Best Use) & Bancabilidade</h2>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Checklist documental com verificação automática de restrições por IA.</p>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Estudos HBU & Bancabilidade</h2>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Sincronizado com o Repositório de Ativos e Auditoria de Restrições por IA.</p>
               </div>
             </div>
 
@@ -356,7 +369,7 @@ export default function App() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                     <div>
                       <h3 style={{ fontSize: '1rem', color: '#ffffff', margin: 0 }}>{asset.name}</h3>
-                      <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Matrícula: {asset.mat} | {asset.loc}</span>
+                      <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Matrícula: {asset.mat} | {asset.loc} | {asset.ha} ha</span>
                     </div>
                     <span style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: 'bold', backgroundColor: 'rgba(5,150,105,0.1)', padding: '0.2rem 0.6rem', borderRadius: '0.5rem' }}>
                       Valuation: {asset.valuation} (LTV {asset.ltv})
@@ -381,7 +394,6 @@ export default function App() {
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              {/* BOTÃO DE UPLOAD DE ARQUIVO REAL */}
                               <input
                                 type="file"
                                 id={`file-up-${asset.id}-${doc.id}`}
@@ -392,7 +404,6 @@ export default function App() {
                                 <Upload style={{ width: '12px', height: '12px' }} /> Anexar Doc
                               </label>
 
-                              {/* BOTÃO DE AUDITORIA POR IA */}
                               <button
                                 onClick={() => handleRunAiAudit(asset.id, doc.id, doc.name)}
                                 style={styles.buttonAi}
@@ -404,7 +415,6 @@ export default function App() {
                             </div>
                           </div>
 
-                          {/* PAINEL DE RESULTADO DA IA */}
                           {doc.aiAudit && (
                             <div style={{ marginTop: '0.5rem', padding: '0.5rem', backgroundColor: '#020617', borderRadius: '0.375rem', border: '1px solid #334155', fontSize: '0.7rem', color: doc.aiAudit.includes('Alerta') ? '#fca5a5' : '#86efac' }}>
                               <strong>Parecer IA:</strong> {doc.aiAudit}
@@ -414,6 +424,27 @@ export default function App() {
                       ))}
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTabId === 'TAB-ASSETS' && (
+          <div style={styles.cardDark}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Repositório de Garantias & Ativos</h2>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Ativos cadastrados na aba de Input e sincronizados para dívida.</p>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+              {globalData.assets.map(asset => (
+                <div key={asset.id} style={{ backgroundColor: '#020617', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #1e293b' }}>
+                  <h4 style={{ color: '#ffffff', margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>{asset.name}</h4>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.2rem 0' }}>Tipo: {asset.type} | Mat: {asset.mat}</p>
+                  <p style={{ fontSize: '0.75rem', color: '#34d399', margin: '0.2rem 0', fontWeight: 'bold' }}>Valuation: {asset.valuation}</p>
+                  <p style={{ fontSize: '0.75rem', color: '#60a5fa', margin: '0.2rem 0' }}>Local: {asset.loc} ({asset.ha} ha)</p>
                 </div>
               ))}
             </div>
