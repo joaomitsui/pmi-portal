@@ -38,45 +38,115 @@ import {
 
 const initialProjectsData = [
   {
-    id: 'PRJ-FUND-01',
-    name: 'Roadshow & Captação de Recursos (R$ 250M)',
-    code: 'FUND-250M',
+    id: 'PRJ-FASE-1',
+    name: 'Fase 1: Mapeamento e Estruturação Financeira & Captação baseado em Imóveis',
+    code: 'FASE-01',
     manager: 'Luiz Marcelo / Shoichiro Mitsui',
     targetDate: '2027-12-31',
-    description: 'Captação estruturada de recursos (Equity & Debt) para implantação da Usina Solar 60 MWp e Protótipo TME.',
+    description: 'Valuation HBU, due diligence documental e estruturação de garantias imobiliárias para suporte à captação.',
     scopeLogs: [
-      { date: '06/11/2026', author: 'Shoichiro Mitsui', action: 'Início da Rodada', description: 'Estruturação de Teaser e seleção de fundos alvo.' }
+      { date: '11/11/2026', author: 'Shoichiro Mitsui', action: 'Início Simultâneo', description: 'Ativação da Fase 1 em paralelo com Fases 2 e 3.' }
     ],
     activities: [
       {
-        id: 'ACT-F1',
+        id: 'ACT-1.1',
         code: '1.0',
-        name: 'Fase Pré-Marketing & Materiais de Investimento',
-        weight: 25,
+        name: 'Due Diligence & Certidões de Bancabilidade (Imóveis)',
+        weight: 50,
         subactivities: [
           {
-            id: 'SUB-F1.1',
+            id: 'SUB-1.1.1',
             code: '1.1',
-            name: 'Elaboração do Teaser Comercial & One-Pager Executivo',
-            owner: 'Luiz Marcelo',
-            startDate: '2026-11-01',
-            endDate: '2026-11-20',
-            progress: 95,
+            name: 'Revisão de Matrículas, Ônus Reais e Laudos ABNT NBR 14653',
+            owner: 'Jurídico / Advisory',
+            startDate: '2026-11-11',
+            endDate: '2027-01-30',
+            progress: 60,
             status: 'Em Andamento',
-            history: [{ date: '01/11/2026', note: 'Minuta final validada pela diretoria.' }],
-            files: ['Teaser_Captacao_R$250M_v2.pdf']
-          },
+            history: [{ date: '11/11/2026', note: 'Matrículas de Porto Velho e Pres. Figueiredo reunidas.' }],
+            files: ['Laudo_ABNT_Consolidado.pdf']
+          }
+        ]
+      },
+      {
+        id: 'ACT-1.2',
+        code: '2.0',
+        name: 'Roadshow de Captação Garantida (Debt/Equity)',
+        weight: 50,
+        subactivities: [
           {
-            id: 'SUB-F1.2',
-            code: '1.2',
-            name: 'Construção do Financial Model & DCF (Discounted Cash Flow)',
-            owner: 'Advisory Financeiro / Shoichiro Mitsui',
-            startDate: '2026-11-05',
-            endDate: '2026-12-10',
-            progress: 80,
+            id: 'SUB-1.2.1',
+            code: '2.1',
+            name: 'Apresentação de Colaterais a Bancos e Fundos de Dívida',
+            owner: 'Luiz Marcelo',
+            startDate: '2026-11-11',
+            endDate: '2027-04-30',
+            progress: 20,
+            status: 'Planejado',
+            history: [{ date: '11/11/2026', note: 'Preparação de One-Pagers de garantias.' }],
+            files: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'PRJ-FASE-2',
+    name: 'Fase 2: Viabilidade, Estruturação Financeira & Captação (Fazenda Solar sem TME)',
+    code: 'FASE-02',
+    manager: 'Shoichiro Mitsui',
+    targetDate: '2027-12-31',
+    description: 'Modelagem financeira padrão, CAPEX/OPEX e captação para Usina Solar 60 MWp convencionais.',
+    scopeLogs: [],
+    activities: [
+      {
+        id: 'ACT-2.1',
+        code: '1.0',
+        name: 'Estudo de Viabilidade & DCF (Sem TME)',
+        weight: 50,
+        subactivities: [
+          {
+            id: 'SUB-2.1.1',
+            code: '1.1',
+            name: 'Elaboração do Financial Model DCF Padrão (Solar 60 MWp)',
+            owner: 'Shoichiro Mitsui',
+            startDate: '2026-11-11',
+            endDate: '2027-02-28',
+            progress: 40,
             status: 'Em Andamento',
-            history: [{ date: '04/11/2026', note: 'Premissas de alavancagem 70/30 injetadas no modelo.' }],
-            files: ['PMI_Financial_Model_2026.xlsx']
+            history: [{ date: '11/11/2026', note: 'Premissas de tarifa de energia injetadas.' }],
+            files: ['DCF_Solar_Sem_TME.xlsx']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'PRJ-FASE-3',
+    name: 'Fase 3: Viabilidade, Estruturação Financeira & Captação (Fazenda Solar com TME)',
+    code: 'FASE-03',
+    manager: 'Shoichiro Mitsui / Luiz Marcelo',
+    targetDate: '2027-12-31',
+    description: 'Modelagem avançada com ganho de eficiência do Booster Magnético TME, patentes INPI e protótipo 330 kVA.',
+    scopeLogs: [],
+    activities: [
+      {
+        id: 'ACT-3.1',
+        code: '1.0',
+        name: 'Viabilidade Tecnológica & Booster TME',
+        weight: 50,
+        subactivities: [
+          {
+            id: 'SUB-3.1.1',
+            code: '1.1',
+            name: 'Simulação de Incremento de ROI/TIR com Tecnologia TME',
+            owner: 'P&D / Shoichiro Mitsui',
+            startDate: '2026-11-11',
+            endDate: '2027-03-30',
+            progress: 50,
+            status: 'Em Andamento',
+            history: [{ date: '11/11/2026', note: 'Integração de patentes INPI no modelo.' }],
+            files: ['DCF_Solar_Com_TME.xlsx']
           }
         ]
       }
@@ -99,16 +169,15 @@ export default function App() {
   const [inputPassword, setInputPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
-  // ESTADO GLOBAL UNIFICADO
   const [globalData, setGlobalData] = useState(() => {
     const saved = localStorage.getItem('pmi_global_data_unified');
     return saved ? JSON.parse(saved) : {
-      config: { startDate: '2026-11-01', structuringDays: 75, fundraisingDays: 90, useTME: true },
+      config: { startDate: '2026-11-11', structuringDays: 75, fundraisingDays: 90, useTME: true },
       assets: [
         {
           id: 1,
           name: 'Terreno Lote 07 (Khuark Construtora)',
-          type: 'Imóvel Rural (HBU)',
+          type: 'Imóvel Rural (HBU - Fase 1)',
           valuation: 'R$ 15.000.000',
           ha: 128.82,
           mat: '103.712',
@@ -118,12 +187,10 @@ export default function App() {
           status: 'Em Due Diligence',
           isSolar: false,
           isCollateral: true,
-          dossier: 'Laudo de Avaliação ABNT NBR 14653 emitido. Potencial de destinação logística e comercial.',
+          dossier: 'Laudo de Avaliação ABNT NBR 14653 emitido para suporte à Fase 1.',
           requiredDocuments: [
-            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_103712.pdf', aiAudit: 'Sem ônus gravosos aparentes. Aprovado para garantia.' },
-            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_ABNT_Lote07.pdf', aiAudit: 'Valuation validado por comparativo de mercado tier-1.' },
-            { id: 'doc-3', name: 'CCIR / ITR Quitado', status: 'Pendente', file: null, aiAudit: 'Aguardando upload do documento.' },
-            { id: 'doc-4', name: 'CAR / Licenciamento Ambiental', status: 'Em Análise', file: 'CAR_RO_103712.pdf', aiAudit: 'Verificando sobreposição de reservas legais (Em andamento).' }
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_103712.pdf', aiAudit: 'Sem ônus gravosos aparentes. Aprovado.' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_ABNT_Lote07.pdf', aiAudit: 'Valuation validado.' }
           ]
         }
       ]
@@ -155,9 +222,6 @@ export default function App() {
   const [activeTabId, setActiveTabId] = useState(() => {
     return localStorage.getItem('pmi_active_tab_id') || 'TAB-INPUT';
   });
-
-  const [showAddAssetModal, setShowAddAssetModal] = useState(false);
-  const [newAssetForm, setNewAssetForm] = useState({ name: '', type: 'Imóvel Rural (HBU)', valuation: 'R$ 10.000.000', ha: 50, mat: '12345', loc: 'Porto Velho/RO', status: 'Regularizado', ltv: '50%', dossier: '' });
 
   const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
   const [aiAnalyzingId, setAiAnalyzingId] = useState(null);
@@ -217,18 +281,14 @@ export default function App() {
   const handleRunAiAudit = (assetId, docId, docName) => {
     setAiAnalyzingId(`${assetId}-${docId}`);
     setTimeout(() => {
-      const randomRest = Math.random() > 0.3;
-      const auditResult = randomRest 
-        ? `[IA Audit OK] ${docName}: Nenhuma restrição ou ônus prejudicial detectado. Documento apto para comitê de crédito.`
-        : `[IA Alerta] ${docName}: Detectada possível divergência nas confrontações da matrícula ou restrição ambiental. Requer validação jurídica.`;
-      
+      const auditResult = `[IA Audit OK] ${docName}: Nenhuma restrição ou ônus prejudicial detectado. Apto para comitê de crédito nas Fases 1, 2 e 3.`;
       setGlobalData(prev => ({
         ...prev,
         assets: prev.assets.map(a => {
           if (a.id === assetId) {
             return {
               ...a,
-              requiredDocuments: a.requiredDocuments.map(d => d.id === docId ? { ...d, status: randomRest ? 'Entregue' : 'Em Análise', aiAudit: auditResult } : d)
+              requiredDocuments: a.requiredDocuments.map(d => d.id === docId ? { ...d, status: 'Entregue', aiAudit: auditResult } : d)
             };
           }
           return a;
@@ -299,15 +359,15 @@ export default function App() {
       <header style={{ backgroundColor: '#0f172a', borderBottom: '1px solid #1e293b', padding: '1rem 1.5rem', position: 'sticky', top: 0, zIndex: 40 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
           <div>
-            <h1 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>PMI Fundraising & TME Portal</h1>
-            <p style={{ fontSize: '0.7rem', color: '#94a3b8', margin: 0 }}>Valuation de Garantias: <span style={{ color: '#34d399', fontWeight: 'bold' }}>{calculateTotalValuation()}</span> | Pipeline Captação: <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>{calculateTotalPipeline()}</span></p>
+            <h1 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>PMI Fundraising & TME Portal (Fases 1, 2 e 3)</h1>
+            <p style={{ fontSize: '0.7rem', color: '#94a3b8', margin: 0 }}>Valuation Garantias: <span style={{ color: '#34d399', fontWeight: 'bold' }}>{calculateTotalValuation()}</span> | Pipeline Captação: <span style={{ color: '#60a5fa', fontWeight: 'bold' }}>{calculateTotalPipeline()}</span></p>
           </div>
           <button onClick={handleLogout} style={{ backgroundColor: '#1e293b', color: '#cbd5e1', fontSize: '0.75rem', fontWeight: 600, padding: '0.4rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #334155', cursor: 'pointer' }}>Sair</button>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto' }}>
           {[
             { id: 'TAB-INPUT', label: '📥 Input & Premissas Globais' },
-            { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado (PMI)' },
+            { id: 'TAB-SCHEDULE', label: 'Cronograma Integrado (Fases 1, 2 e 3)' },
             { id: 'TAB-FUNDRAISING', label: 'Dashboard de Captação' },
             { id: 'TAB-HBU', label: 'Estudos HBU & Bancabilidade' },
             { id: 'TAB-ASSETS', label: 'Repositório de Garantias' }
@@ -327,7 +387,7 @@ export default function App() {
         {activeTabId === 'TAB-FUNDRAISING' && (
           <div style={styles.cardDark}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Funil de Captação de Recursos (Meta R$ 250M)</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Funil de Captação (Fases 1, 2 & 3)</h2>
               <button onClick={() => setShowAddFundModal(true)} style={styles.buttonGreen}>Adicionar Fundo</button>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.8rem' }}>
@@ -358,8 +418,8 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
               <Compass style={{ color: '#38bdf8', width: '28px', height: '28px' }} />
               <div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Estudos HBU & Bancabilidade</h2>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Sincronizado com o Repositório de Ativos e Auditoria de Restrições por IA.</p>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Estudos HBU & Bancabilidade (Fase 1)</h2>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Checklist documental integrado com auditoria de restrições por IA.</p>
               </div>
             </div>
 
@@ -434,8 +494,8 @@ export default function App() {
           <div style={styles.cardDark}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Repositório de Garantias & Ativos</h2>
-                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Ativos cadastrados na aba de Input e sincronizados para dívida.</p>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>Repositório de Garantias & Ativos (Fase 1)</h2>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>Ativos imobiliários sincronizados para suporte às Fases 1, 2 e 3.</p>
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
