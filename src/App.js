@@ -876,7 +876,7 @@ export default function App() {
 <button type="submit" style={styles.buttonGreen}>
   Salvar Ativo no Dossier
 </button>
-      </form>
-    </div>
+    </form>
   </div>
+</div>
 )}
