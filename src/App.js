@@ -176,20 +176,124 @@ export default function App() {
   const [inputPassword, setInputPassword] = useState('');
   const [authError, setAuthError] = useState('');
 
-  const [globalData, setGlobalData] = useState({
-    config: {
-      startDate: '2026-11-01',
-      structuringDays: 75,
-      fundraisingDays: 90,
-      useTME: true
-    },
-    assets: [
-      { id: 1, name: 'Terreno Lote 07 (Khuark Construtora)', ha: 128.82, mat: '103.712', loc: 'Porto Velho/RO', ptam: 0, isSolar: false, isCollateral: true },
-      { id: 2, name: 'Sítio Silva (Daniela Silva dos Reis)', ha: 96.92, mat: '10030', loc: 'Porto Velho/RO', ptam: 0, isSolar: false, isCollateral: true },
-      { id: 3, name: 'Fazenda Arizona (Lincoln Duarte)', ha: 412.61, mat: '9230', loc: 'Porto Velho/RO', ptam: 0, isSolar: true, isCollateral: true },
-      { id: 4, name: 'Lote 2683 (North Star Energy)', ha: 3000.00, mat: '2.683', loc: 'Pres. Figueiredo/AM', ptam: 18460000, isSolar: true, isCollateral: true },
-      { id: 5, name: 'Lote 2684 (North Star Energy)', ha: 3000.00, mat: '2.684', loc: 'Pres. Figueiredo/AM', ptam: 18060000, isSolar: true, isCollateral: true }
-    ]
+  // 📥 ESTADO GLOBAL UNIFICADO DE ATIVOS & GARANTIAS (Com Checklist de Bancabilidade)
+  const [globalData, setGlobalData] = useState(() => {
+    const saved = localStorage.getItem('pmi_global_data_unified');
+    return saved ? JSON.parse(saved) : {
+      config: {
+        startDate: '2026-11-01',
+        structuringDays: 75,
+        fundraisingDays: 90,
+        useTME: true
+      },
+      assets: [
+        {
+          id: 1,
+          name: 'Terreno Lote 07 (Khuark Construtora)',
+          type: 'Imóvel Rural (HBU)',
+          valuation: 'R$ 15.000.000',
+          ha: 128.82,
+          mat: '103.712',
+          loc: 'Porto Velho/RO',
+          ptam: 0,
+          ltv: '50%',
+          status: 'Em Due Diligence',
+          isSolar: false,
+          isCollateral: true,
+          dossier: 'Laudo de Avaliação ABNT NBR 14653 emitido. Potencial de destinação logística e comercial.',
+          requiredDocuments: [
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_103712.pdf' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_ABNT_Lote07.pdf' },
+            { id: 'doc-3', name: 'CCIR / ITR Quitado', status: 'Pendente', file: null },
+            { id: 'doc-4', name: 'CAR / Licenciamento Ambiental', status: 'Em Análise', file: 'CAR_RO_103712.pdf' }
+          ]
+        },
+        {
+          id: 2,
+          name: 'Sítio Silva (Daniela Silva dos Reis)',
+          type: 'Imóvel Rural (HBU)',
+          valuation: 'R$ 12.000.000',
+          ha: 96.92,
+          mat: '10030',
+          loc: 'Porto Velho/RO',
+          ptam: 0,
+          ltv: '50%',
+          status: 'Regularizado',
+          isSolar: false,
+          isCollateral: true,
+          dossier: 'Área consolidada com vocação agroindustrial e suporte a corredores de escoamento.',
+          requiredDocuments: [
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_10030.pdf' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_ABNT_SitioSilva.pdf' },
+            { id: 'doc-3', name: 'CCIR / ITR Quitado', status: 'Entregue', file: 'CCIR_Quitado.pdf' },
+            { id: 'doc-4', name: 'CAR / Licenciamento Ambiental', status: 'Entregue', file: 'CAR_SitioSilva.pdf' }
+          ]
+        },
+        {
+          id: 3,
+          name: 'Fazenda Arizona (Lincoln Duarte)',
+          type: 'Imóvel Rural / Solar',
+          valuation: 'R$ 36.500.000',
+          ha: 412.61,
+          mat: '9230',
+          loc: 'Porto Velho/RO',
+          ptam: 0,
+          ltv: '50%',
+          status: 'Regularizado',
+          isSolar: true,
+          isCollateral: true,
+          dossier: 'Topografia plana ideal para instalação de parque solar fotovoltaico de 60 MWp.',
+          requiredDocuments: [
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_9230.pdf' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_FazendaArizona.pdf' },
+            { id: 'doc-3', name: 'CCIR / ITR Quitado', status: 'Entregue', file: 'CCIR_Arizona.pdf' },
+            { id: 'doc-4', name: 'CAR / Licenciamento Ambiental', status: 'Entregue', file: 'CAR_Arizona.pdf' }
+          ]
+        },
+        {
+          id: 4,
+          name: 'Lote 2683 (North Star Energy)',
+          type: 'Imóvel Industrial / Solar',
+          valuation: 'R$ 18.460.000',
+          ha: 3000.00,
+          mat: '2.683',
+          loc: 'Pres. Figueiredo/AM',
+          ptam: 18460000,
+          ltv: '45%',
+          status: 'Regularizado',
+          isSolar: true,
+          isCollateral: true,
+          dossier: 'Área com viabilidade validada para expansão energética e cogeração.',
+          requiredDocuments: [
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_2683.pdf' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_2683.pdf' },
+            { id: 'doc-3', name: 'Certidões Negativas', status: 'Entregue', file: 'CND_2683.pdf' },
+            { id: 'doc-4', name: 'Licenciamento Ambiental Prévio', status: 'Entregue', file: 'LP_2683.pdf' }
+          ]
+        },
+        {
+          id: 5,
+          name: 'Lote 2684 (North Star Energy)',
+          type: 'Imóvel Industrial / Solar',
+          valuation: 'R$ 18.060.000',
+          ha: 3000.00,
+          mat: '2.684',
+          loc: 'Pres. Figueiredo/AM',
+          ptam: 18060000,
+          ltv: '45%',
+          status: 'Regularizado',
+          isSolar: true,
+          isCollateral: true,
+          dossier: 'Colateral de alta liquidez para comitês de crédito internacionais.',
+          requiredDocuments: [
+            { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Entregue', file: 'Matricula_2684.pdf' },
+            { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Entregue', file: 'Laudo_2684.pdf' },
+            { id: 'doc-3', name: 'Certidões Negativas', status: 'Entregue', file: 'CND_2684.pdf' },
+            { id: 'doc-4', name: 'Licenciamento Ambiental Prévio', status: 'Entregue', file: 'LP_2684.pdf' }
+          ]
+        }
+      ]
+    };
   });
   
   const [userCredentials, setUserCredentials] = useState(() => {
@@ -229,34 +333,18 @@ export default function App() {
     return localStorage.getItem('pmi_active_tab_id') || 'TAB-FUNDRAISING';
   });
 
-  const [assets, setAssets] = useState(() => {
-    const saved = localStorage.getItem('pmi_assets_repo');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'AST-1',
-        name: 'Fazenda Rio Branco - Gleba Norte (Matrícula 4.501)',
-        type: 'Imóvel Rural (HBU: Solar + Agro)',
-        valuation: 'R$ 45.000.000',
-        status: 'Regularizado',
-        ltv: '50%',
-        dossier: 'Laudo de Avaliação ABNT NBR 14653 emitido por empresa tier-1. Certidões de ônus reais limpas e CCIR/CAR atestados.',
-        documents: ['Laudo_ABNT_Fazenda_Rio_Branco.pdf', 'Matricula_4501_Atualizada.pdf', 'Certidao_Negativa_Federal_Estadual.pdf']
-      },
-      {
-        id: 'AST-2',
-        name: 'Área Industrial Porto Velho (Matrícula 8.210)',
-        type: 'Imóvel Urbano / Logístico',
-        valuation: 'R$ 18.500.000',
-        status: 'Em Due Diligence',
-        ltv: '45%',
-        dossier: 'Estudo de vocação industrial logística concluído. Licença prévia de instalação emitida.',
-        documents: ['Estudo_HBU_Porto_Velho.pdf', 'Licenca_Previa_Ambiental.pdf']
-      }
-    ];
-  });
-
   const [showAddAssetModal, setShowAddAssetModal] = useState(false);
-  const [newAssetForm, setNewAssetForm] = useState({ name: '', type: 'Imóvel Rural (HBU)', valuation: '', status: 'Regularizado', ltv: '50%', dossier: '' });
+  const [newAssetForm, setNewAssetForm] = useState({
+    name: '',
+    type: 'Imóvel Rural (HBU)',
+    valuation: 'R$ 10.000.000',
+    ha: 50,
+    mat: '12345',
+    loc: 'Porto Velho/RO',
+    status: 'Regularizado',
+    ltv: '50%',
+    dossier: ''
+  });
 
   const [lastSync, setLastSync] = useState(new Date().toLocaleTimeString());
   const [dailyTodos, setDailyTodos] = useState(() => {
@@ -290,8 +378,8 @@ export default function App() {
   }, [fundsPipeline]);
 
   useEffect(() => {
-    localStorage.setItem('pmi_assets_repo', JSON.stringify(assets));
-  }, [assets]);
+    localStorage.setItem('pmi_global_data_unified', JSON.stringify(globalData));
+  }, [globalData]);
 
   useEffect(() => {
     localStorage.setItem('pmi_daily_todos', JSON.stringify(dailyTodos));
@@ -364,19 +452,50 @@ export default function App() {
     if (!newAssetForm.name.trim() || !newAssetForm.valuation.trim()) return;
 
     const newAsset = {
-      id: `AST-${Date.now()}`,
+      id: Date.now(),
       name: newAssetForm.name,
       type: newAssetForm.type,
       valuation: newAssetForm.valuation,
-      status: newAssetForm.status,
+      ha: Number(newAssetForm.ha) || 50,
+      mat: newAssetForm.mat,
+      loc: newAssetForm.loc,
+      ptam: 0,
       ltv: newAssetForm.ltv,
-      dossier: newAssetForm.dossier || 'Dossier padrão HBU em elaboração.',
-      documents: ['Laudo_Avaliacao_Oficial.pdf', 'Matriçula_Imovel.pdf']
+      status: newAssetForm.status,
+      isSolar: true,
+      isCollateral: true,
+      dossier: newAssetForm.dossier || 'Dossier padrão HBU em elaboração com laudo NBR 14653.',
+      requiredDocuments: [
+        { id: 'doc-1', name: 'Matrícula Atualizada (Ônus Reais)', status: 'Pendente', file: null },
+        { id: 'doc-2', name: 'Laudo de Avaliação NBR 14653', status: 'Pendente', file: null },
+        { id: 'doc-3', name: 'CCIR / ITR Quitado', status: 'Pendente', file: null },
+        { id: 'doc-4', name: 'CAR / Licenciamento Ambiental', status: 'Pendente', file: null }
+      ]
     };
 
-    setAssets(prev => [newAsset, ...prev]);
+    setGlobalData(prev => ({
+      ...prev,
+      assets: [newAsset, ...prev.assets]
+    }));
+
     setShowAddAssetModal(false);
-    setNewAssetForm({ name: '', type: 'Imóvel Rural (HBU)', valuation: '', status: 'Regularizado', ltv: '50%', dossier: '' });
+    setNewAssetForm({ name: '', type: 'Imóvel Rural (HBU)', valuation: 'R$ 10.000.000', ha: 50, mat: '12345', loc: 'Porto Velho/RO', status: 'Regularizado', ltv: '50%', dossier: '' });
+    setLastSync(new Date().toLocaleTimeString());
+  };
+
+  const handleUpdateDocStatus = (assetId, docId, newStatus) => {
+    setGlobalData(prev => ({
+      ...prev,
+      assets: prev.assets.map(a => {
+        if (a.id === assetId) {
+          return {
+            ...a,
+            requiredDocuments: a.requiredDocuments.map(d => d.id === docId ? { ...d, status: newStatus, file: newStatus === 'Entregue' ? 'Documento_Validado.pdf' : d.file } : d)
+          };
+        }
+        return a;
+      })
+    }));
     setLastSync(new Date().toLocaleTimeString());
   };
 
@@ -389,12 +508,21 @@ export default function App() {
     return total > 0 ? `R$ ${(total).toLocaleString('pt-BR')}` : 'R$ 250.000.000';
   };
 
+  const calculateTotalValuation = () => {
+    let total = 0;
+    globalData.assets.forEach(a => {
+      const num = parseFloat(a.valuation.replace(/[^0-9,-]/g, '').replace(',', '.'));
+      if (!isNaN(num)) total += num;
+    });
+    return total > 0 ? `R$ ${(total).toLocaleString('pt-BR')}` : 'R$ 63.500.000';
+  };
+
   const styles = {
     bgDark: { backgroundColor: '#090d16', minHeight: '100vh', color: '#f1f5f9', fontFamily: 'system-ui, -apple-system, sans-serif' },
     cardDark: { backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '1rem', padding: '1.5rem' },
     inputDark: { backgroundColor: '#020617', border: '1px solid #334155', color: '#ffffff', borderRadius: '0.75rem', padding: '0.75rem 1rem', width: '100%', outline: 'none' },
     buttonPrimary: { backgroundColor: '#2563eb', color: '#ffffff', fontWeight: 'bold', borderRadius: '0.75rem', padding: '0.75rem 1rem', width: '100%', cursor: 'pointer', border: 'none' },
-    buttonGreen: { backgroundColor: '#059669', color: '#ffffff', fontWeight: 'bold', borderRadius: '0.6rem 1rem', cursor: 'pointer', border: 'none' },
+    buttonGreen: { backgroundColor: '#059669', color: '#ffffff', fontWeight: 'bold', borderRadius: '0.6rem', padding: '0.6rem 1rem', cursor: 'pointer', border: 'none' },
     buttonIndigo: { backgroundColor: '#4f46e5', color: '#ffffff', fontWeight: 'bold', borderRadius: '0.5rem', padding: '0.4rem 0.8rem', cursor: 'pointer', border: 'none' }
   };
 
@@ -559,7 +687,7 @@ export default function App() {
                 </div>
                 <div style={{ backgroundColor: '#020617', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #1e293b' }}>
                   <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Garantias Validadas (HBU)</span>
-                  <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#ffffff', margin: '0.3rem 0' }}>R$ 63.500.000</h3>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#ffffff', margin: '0.3rem 0' }}>{calculateTotalValuation()}</h3>
                   <p style={{ fontSize: '0.7rem', color: '#60a5fa', margin: 0 }}>Colateral imobiliário pronto para dívida</p>
                 </div>
                 <div style={{ backgroundColor: '#020617', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #1e293b' }}>
@@ -730,6 +858,7 @@ export default function App() {
           </div>
         )}
 
+        {/* ABA DE ESTUDOS HBU & BANCABILIDADE (SINCRONIZADA COM INPUTS & CHECKLIST DE DOCUMENTOS) */}
         {activeTabId === 'TAB-HBU' && (
           <div style={styles.cardDark}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -739,16 +868,19 @@ export default function App() {
                   Estudos HBU (Highest and Best Use) & Bancabilidade
                 </h2>
                 <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>
-                  Dossier completo de valorização de ativos e documentação de garantia para comitês de crédito.
+                  Dossier completo de valorização de ativos e checklist documental integrados para comitês de crédito.
                 </p>
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1rem' }}>
-              {assets.map(asset => (
+              {globalData.assets.map(asset => (
                 <div key={asset.id} style={{ backgroundColor: '#020617', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #1e293b' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1rem', color: '#ffffff', margin: 0 }}>{asset.name}</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <div>
+                      <h3 style={{ fontSize: '1rem', color: '#ffffff', margin: 0 }}>{asset.name}</h3>
+                      <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Matrícula: {asset.mat} | Localidade: {asset.loc} | {asset.ha} ha</span>
+                    </div>
                     <span style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: 'bold', backgroundColor: 'rgba(5,150,105,0.1)', padding: '0.2rem 0.6rem', borderRadius: '0.5rem' }}>
                       Valuation: {asset.valuation} (LTV {asset.ltv})
                     </span>
@@ -759,14 +891,41 @@ export default function App() {
                   </p>
 
                   <div style={{ borderTop: '1px solid #1e293b', paddingTop: '0.75rem' }}>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#94a3b8', display: 'block', marginBottom: '0.5rem' }}>
-                      Documentação Oficial Anexada para Due Diligence Bancária:
-                    </span>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {asset.documents && asset.documents.map((doc, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', backgroundColor: '#0f172a', border: '1px solid #334155', padding: '0.35rem 0.75rem', borderRadius: '0.5rem', fontSize: '0.7rem', color: '#38bdf8' }}>
-                          <FileText style={{ width: '14px', height: '14px' }} />
-                          <span>{doc}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#38bdf8' }}>
+                        Checklist de Bancabilidade & Due Diligence Documental:
+                      </span>
+                      <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Controle de Certidões Bancárias</span>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {asset.requiredDocuments?.map(doc => (
+                        <div key={doc.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0f172a', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', fontSize: '0.75rem', border: '1px solid #1e293b' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <FileText style={{ width: '14px', height: '14px', color: '#38bdf8' }} />
+                            <span>{doc.name} {doc.file ? `(${doc.file})` : ''}</span>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <select
+                              value={doc.status}
+                              onChange={(e) => handleUpdateDocStatus(asset.id, doc.id, e.target.value)}
+                              style={{
+                                backgroundColor: doc.status === 'Entregue' ? 'rgba(5,150,105,0.2)' : 'rgba(245,158,11,0.2)',
+                                color: doc.status === 'Entregue' ? '#34d399' : '#fcd34d',
+                                border: '1px solid #334155',
+                                borderRadius: '0.375rem',
+                                padding: '0.25rem 0.5rem',
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <option value="Pendente">Pendente</option>
+                              <option value="Em Análise">Em Análise</option>
+                              <option value="Entregue">Entregue (Validado)</option>
+                            </select>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -777,32 +936,34 @@ export default function App() {
           </div>
         )}
 
+        {/* ABA DE REPOSITÓRIO DE GARANTIAS (INTEGRADA COM OS INPUTS) */}
         {activeTabId === 'TAB-ASSETS' && (
           <div style={styles.cardDark}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ffffff', margin: 0 }}>
-                  Repositório de Garantias & Ativos
+                  Repositório de Garantias & Ativos Imobiliários
                 </h2>
                 <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>
-                  Gestão dos colaterais imobiliários para suporte à captação de dívida.
+                  Gestão integrada dos colaterais sincronizados a partir da aba de Inputs e premissas.
                 </p>
               </div>
               <button
                 onClick={() => setShowAddAssetModal(true)}
                 style={{ backgroundColor: '#059669', color: '#ffffff', fontSize: '0.75rem', fontWeight: 'bold', padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
               >
-                <Plus style={{ width: '16px', height: '16px' }} /> Cadastrar Novo Ativo
+                <Plus style={{ width: '16px', height: '16px' }} /> Cadastrar Novo Ativo HBU
               </button>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-              {assets.map(asset => (
+              {globalData.assets.map(asset => (
                 <div key={asset.id} style={{ backgroundColor: '#020617', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #1e293b' }}>
                   <h4 style={{ color: '#ffffff', margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>{asset.name}</h4>
-                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.2rem 0' }}>Tipo: {asset.type}</p>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.2rem 0' }}>Tipo: {asset.type} | Mat: {asset.mat}</p>
                   <p style={{ fontSize: '0.75rem', color: '#34d399', margin: '0.2rem 0', fontWeight: 'bold' }}>Valuation: {asset.valuation}</p>
                   <p style={{ fontSize: '0.75rem', color: '#60a5fa', margin: '0.2rem 0' }}>Status: {asset.status} (LTV: {asset.ltv})</p>
+                  <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.5rem' }}>Local: {asset.loc} ({asset.ha} ha)</p>
                 </div>
               ))}
             </div>
@@ -914,7 +1075,7 @@ export default function App() {
         )}
       </main>
 
-      {/* MODAL PARA ADICIONAR FUNDO AO FUNIL */}
+      {/* MODAL PARA ADICIONAR FUNDO AO PIPELINE */}
       {showAddFundModal && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(2,6,23,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
           <div style={{ ...styles.cardDark, width: '100%', maxWidth: '450px' }}>
@@ -1000,7 +1161,7 @@ export default function App() {
         </div>
       )}
 
-      {/* MODAL PARA ADICIONAR ATIVO */}
+      {/* MODAL PARA CADASTRAR NOVO ATIVO HBU */}
       {showAddAssetModal && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(2,6,23,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
           <div style={{ ...styles.cardDark, width: '100%', maxWidth: '450px' }}>
@@ -1030,7 +1191,7 @@ export default function App() {
                 <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Tipo de Ativo</label>
                 <input
                   type="text"
-                  placeholder="Ex: Imóvel Rural / Industrial"
+                  placeholder="Ex: Imóvel Rural / Industrial (HBU)"
                   value={newAssetForm.type}
                   onChange={(e) => setNewAssetForm({ ...newAssetForm, type: e.target.value })}
                   style={styles.inputDark}
@@ -1038,16 +1199,54 @@ export default function App() {
                 />
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Valuation (R$)</label>
-                <input
-                  type="text"
-                  placeholder="Ex: R$ 30.000.000"
-                  value={newAssetForm.valuation}
-                  onChange={(e) => setNewAssetForm({ ...newAssetForm, valuation: e.target.value })}
-                  style={styles.inputDark}
-                  required
-                />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Valuation (R$)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: R$ 30.000.000"
+                    value={newAssetForm.valuation}
+                    onChange={(e) => setNewAssetForm({ ...newAssetForm, valuation: e.target.value })}
+                    style={styles.inputDark}
+                    required
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Área (Hectares)</label>
+                  <input
+                    type="number"
+                    placeholder="Ex: 150"
+                    value={newAssetForm.ha}
+                    onChange={(e) => setNewAssetForm({ ...newAssetForm, ha: e.target.value })}
+                    style={styles.inputDark}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Número da Matrícula</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 4502"
+                    value={newAssetForm.mat}
+                    onChange={(e) => setNewAssetForm({ ...newAssetForm, mat: e.target.value })}
+                    style={styles.inputDark}
+                    required
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>Localidade</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Porto Velho/RO"
+                    value={newAssetForm.loc}
+                    onChange={(e) => setNewAssetForm({ ...newAssetForm, loc: e.target.value })}
+                    style={styles.inputDark}
+                    required
+                  />
+                </div>
               </div>
 
               <div>
@@ -1064,7 +1263,7 @@ export default function App() {
               </div>
 
               <button type="submit" style={styles.buttonGreen}>
-                Salvar Ativo no Dossier
+                Salvar Ativo no Repositório
               </button>
             </form>
           </div>
