@@ -870,14 +870,9 @@ export default function App() {
                   required
                 />
               </div>
-
-              <button type="submit" style={styles.buttonGreen}>
-                Salvar Ativo no Dossier
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+<button type="submit" style={styles.buttonGreen}>
+        Salvar Ativo no Dossier
+      </button>
+    </form>
+  </div>
+)}
