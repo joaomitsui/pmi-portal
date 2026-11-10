@@ -861,16 +861,21 @@ export default function App() {
               </div>
 
 <div>
-  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>
-    {'Análise HBU & Bancabilidade'}
-  </label>
-  <textarea
-    placeholder="Resumo do laudo ABNT e viabilidade como colateral..."
-    value={newAssetForm.dossier}
-    onChange={(e) => setNewAssetForm({ ...newAssetForm, dossier: e.target.value })}
-    style={{ ...styles.inputDark, height: '70px', resize: 'vertical' }}
-    required
-  />
-</form>
-  </div>
+      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.25rem' }}>
+        {'Análise HBU & Bancabilidade'}
+      </label>
+      <textarea
+        placeholder="Resumo do laudo ABNT e viabilidade como colateral..."
+        value={newAssetForm.dossier}
+        onChange={(e) => setNewAssetForm({ ...newAssetForm, dossier: e.target.value })}
+        style={{ ...styles.inputDark, height: '70px', resize: 'vertical' }}
+        required
+      />
+    </div>
+
+    <button type="submit" style={styles.buttonGreen}>
+      Salvar Ativo no Dossier
+    </button>
+  </form>
+</div>
 )}
