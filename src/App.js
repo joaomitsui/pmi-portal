@@ -871,4 +871,6 @@ export default function App() {
     style={{ ...styles.inputDark, height: '70px', resize: 'vertical' }}
     required
   />
-</div>
+</form>
+  </div>
+)}
